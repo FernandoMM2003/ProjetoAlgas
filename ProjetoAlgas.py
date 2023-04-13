@@ -53,7 +53,9 @@ def analise_movimento():
     nY = random.normalvariate(0.018, 0.015)
     nZ = random.normalvariate(0.017, 0.012)
 
-    for i in range(6):
+    # Simulando a análise de uma pessoa que dorme 5 horas por dia durante 1 mês (22 dias úteis)
+    # Simulando 5 estágios de sono
+    for i in range(22):
 
         if i == 1:
             # Início do sono (Começo do sono até a primeira hora do sono)
