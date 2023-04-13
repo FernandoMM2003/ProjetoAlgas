@@ -12,7 +12,7 @@ def conect_banco():
         conn = mysql.connector.connect(
             host="localhost", 
             user="root", 
-            password="25072003julho", 
+            password="urubu100", 
             database="movimento",
             port="3306")
         print("Conexão com banco de dados feita\n")
