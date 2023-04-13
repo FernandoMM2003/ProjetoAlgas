@@ -14,7 +14,7 @@ def conect_banco():
             user="root", 
             password="urubu100", 
             database="movimento",
-            port="3306")
+            port="33060")
         print("Conexão com banco de dados feita\n")
         return conn
     except mysql.connector.Error as error:
