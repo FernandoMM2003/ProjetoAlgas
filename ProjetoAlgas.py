@@ -14,7 +14,7 @@ def conect_banco():
             user="root", 
             password="urubu100", 
             database="movimento",
-            port="33060")
+            port="3306")
         print("Conexão com banco de dados feita\n")
         return conn
     except mysql.connector.Error as error:
@@ -55,9 +55,9 @@ def analise_movimento():
 
     # Simulando a análise de uma pessoa que dorme 5 horas por dia durante 1 mês (22 dias úteis)
     # Simulando 5 estágios de sono
-    for i in range(22):
-
-        if i == 1:
+    for i in range(100000):
+        for j in range(6):
+        
             # Início do sono (Começo do sono até a primeira hora do sono)
             inicioProcessamentoA = time.time()
 
@@ -88,7 +88,6 @@ def analise_movimento():
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{inicio_sonoX}', '{inicio_sonoY}', '{inicio_sonoZ}', '{primeira_hora_sono}', '{espacoA}', '{duracaoA}');"
             cursor.execute(query)
     
-        if i == 2:
 
             # Sono Leve (Primeira hora de sono até a segunda hora do sono)
             inicioProcessamentoB = time.time()
@@ -119,7 +118,6 @@ def analise_movimento():
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_leveX}', '{sono_leveY}', '{sono_leveZ}', '{segunda_hora_sono}', '{espacoB}', '{duracaoB}');"
             cursor.execute(query)
 
-        if i == 3:
 
             # Sono profundo (Segunda hora de sono até a terceira hora do sono)
             inicioProcessamentoC = time.time()
@@ -151,7 +149,6 @@ def analise_movimento():
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_profundoX}', '{sono_profundoY}', '{sono_profundoZ}', '{terceira_hora_sono}', '{espacoC}', '{duracaoC}');"
             cursor.execute(query)
 
-        if i == 4:
             # Sono REM (Terceira hora de sono até a quarta hora do sono)
             inicioProcessamentoD = time.time()
 
@@ -182,7 +179,6 @@ def analise_movimento():
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_remX}', '{sono_remY}', '{sono_remZ}', '{quarta_hora_sono}', '{espacoD}', '{duracaoD}');"
             cursor.execute(query)
 
-        if i == 5: 
             # Fim do sono (Quarta hora de sono até a quinta hora do sono)
             inicioProcessamentoE = time.time()
 
@@ -212,9 +208,9 @@ def analise_movimento():
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{fim_sonoX}', '{fim_sonoY}', '{fim_sonoZ}', '{quinta_hora_sono}', '{espacoE}', '{duracaoE}');"
             cursor.execute(query)
+            conn.commit() 
 
     cursor.close()
-    conn.commit() 
     conn.close()
 
     listaEspaco.append(espacoA)
