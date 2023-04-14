@@ -13,7 +13,8 @@ def conect_banco():
             host="localhost", 
             user="root", 
             password="urubu100", 
-            database="movimento")
+            database="movimento",
+            port="3306")
         print("Conexão com banco de dados feita\n")
         return conn
     except mysql.connector.Error as error:
