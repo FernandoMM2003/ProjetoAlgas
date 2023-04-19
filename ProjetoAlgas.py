@@ -55,8 +55,8 @@ def analise_movimento():
 
     # Simulando a análise de uma pessoa que dorme 5 horas por dia durante 1 mês (22 dias úteis)
     # Simulando 5 estágios de sono
-    for i in range(6):
-        for j in range(6):
+    for i in range(22):
+        for j in range(5):
         
             # Início do sono (Começo do sono até a primeira hora do sono)
             inicioProcessamentoA = time.time()
