@@ -10,7 +10,7 @@ import sys
 def conect_banco():
     try:
         conn = mysql.connector.connect(
-            host="localhost", 
+            #host="localhost", 
             user="roott", 
             password="Urubu100", 
             database="sensor-movimento.mysql.database.azure.com")
