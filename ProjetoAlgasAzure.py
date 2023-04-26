@@ -15,7 +15,6 @@ def conect_banco():
             password="Urubu100",
             database="movimento",
             ssl_ca="DigiCertGlobalRootCA.crt.pem",
-            ssl_verify_identity: True,
             #ssl-mode==require)
             port="3306")
         print("Conexão com banco de dados feita\n")
