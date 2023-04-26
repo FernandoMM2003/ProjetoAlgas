@@ -13,7 +13,7 @@ def conect_banco():
             hostname="sensor-movimento.mysql.database.azure.com", 
             user="roott", 
             password="Urubu100", 
-            database="sensor-movimento.mysql.database.azure.com"
+            #database="sensor-movimento.mysql.database.azure.com"
             ssl-mode="require"
             #port="33062"
             )
