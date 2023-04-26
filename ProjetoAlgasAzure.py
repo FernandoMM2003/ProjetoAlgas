@@ -14,7 +14,7 @@ def conect_banco():
             user="roott", 
             password="Urubu100", 
             #database="sensor-movimento.mysql.database.azure.com"
-            ssl-mode="require"
+            ssl-mode=require
             #port="33062"
             )
         print("Conexão com banco de dados feita\n")
