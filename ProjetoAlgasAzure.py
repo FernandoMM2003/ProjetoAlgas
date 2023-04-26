@@ -10,10 +10,10 @@ import sys
 def conect_banco():
     try:
         conn = mysql.connector.connect(
-            host="sensor-movimento.mysql.database.azure.com", 
+            #host="", 
             user="roott", 
             password="Urubu100", 
-            database="movimento",
+            database="sensor-movimento.mysql.database.azure.com",
             port="3306")
         print("Conexão com banco de dados feita\n")
         return conn
