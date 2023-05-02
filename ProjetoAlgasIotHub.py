@@ -1,6 +1,4 @@
 #pip install azure-iot-device
-#https://dontpad.com/chatAmorFernando
-#
 from azure.iot.device import IoTHubDeviceClient, Message
 import matplotlib.pyplot as plot
 import mysql.connector
