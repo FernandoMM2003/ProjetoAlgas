@@ -44,11 +44,33 @@ def conect_banco():
         else:
             print(error)
 
+def conect_banco_grupo():
+    try:
+        conn_grupo = mysql.connector.connect(
+            host="frequenciacardiaca.mysql.database.azure.com", 
+            user="roott", 
+            password="Urubu100",
+            database="Grupo3",
+            ssl_ca="DigiCertGlobalRootCA.crt.pem",
+            #ssl-mode==require)
+            port="3306")
+        print("Conexão com banco de dados feita\n")
+        return conn_grupo
+    except mysql.connector.Error as error:
+        if error.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database doesn't exist")
+        elif error.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("User name or password is wrong")
+        else:
+            print(error)            
+
 def analise_movimento():
 
     conn = conect_banco()
+    conn_grupo = conect_banco_grupo()
     cursor = conn.cursor()
-    
+    cursor_grupo = conn_grupo.cursor()
+
     leitura_inicio_sono = []
     leitura_sono_leve = []
     leitura_sono_profundo = []
@@ -106,13 +128,14 @@ def analise_movimento():
             duracaoA = fimProcessamentoA - inicioProcessamentoA
             espacoA = sys.getsizeof(leitura_inicio_sono) / (1024 * 1024)
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f}, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
                           (inicio_sonoX, inicio_sonoY, inicio_sonoZ, primeira_hora_sono, espacoA, duracaoA, bateria))
             send_message(message)
             bateria -= 0.01 / 100 * bateria
             
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{inicio_sonoX}', '{inicio_sonoY}', '{inicio_sonoZ}', '{primeira_hora_sono}', '{espacoA}', '{duracaoA}');"
             cursor.execute(query)
+            cursor_grupo.execute(query)
     
 
             # Sono Leve (Primeira hora de sono até a segunda hora do sono)
@@ -141,13 +164,14 @@ def analise_movimento():
             duracaoB = fimProcessamentoB - inicioProcessamentoB
             espacoB = sys.getsizeof(leitura_sono_leve) / (1024 * 1024)
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f}, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
                           (sono_leveX, sono_leveY, sono_leveZ, segunda_hora_sono, espacoB, duracaoB, bateria))
             send_message(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_leveX}', '{sono_leveY}', '{sono_leveZ}', '{segunda_hora_sono}', '{espacoB}', '{duracaoB}');"
             cursor.execute(query)
+            cursor_grupo.execute(query)
 
 
             # Sono profundo (Segunda hora de sono até a terceira hora do sono)
@@ -177,13 +201,14 @@ def analise_movimento():
             duracaoC = fimProcessamentoC - inicioProcessamentoC
             espacoC = sys.getsizeof(leitura_sono_profundo) / (1024 * 1024)
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f}, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_profundoX, sono_profundoY, sono_profundoZ, terceira_hora_sono, espacoC, duracaoC, bateria))
             send_message(message)
             bateria -= 0.01 / 100 * bateria
             
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_profundoX}', '{sono_profundoY}', '{sono_profundoZ}', '{terceira_hora_sono}', '{espacoC}', '{duracaoC}');"
             cursor.execute(query)
+            cursor_grupo.execute(query)
 
             # Sono REM (Terceira hora de sono até a quarta hora do sono)
             inicioProcessamentoD = time.time()
@@ -212,13 +237,14 @@ def analise_movimento():
             duracaoD = fimProcessamentoD - inicioProcessamentoD
             espacoD = sys.getsizeof(leitura_sono_rem) / (1024 * 1024)  
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f}, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_remX, sono_remY, sono_remZ, quarta_hora_sono, espacoD, duracaoD, bateria))
             send_message(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_remX}', '{sono_remY}', '{sono_remZ}', '{quarta_hora_sono}', '{espacoD}', '{duracaoD}');"
             cursor.execute(query)
+            cursor_grupo.execute(query)
 
             # Fim do sono (Quarta hora de sono até a quinta hora do sono)
             inicioProcessamentoE = time.time()
@@ -247,17 +273,21 @@ def analise_movimento():
             duracaoE = fimProcessamentoE - inicioProcessamentoE
             espacoE = sys.getsizeof(leitura_fim_sono) / (1024 * 1024)  
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f}, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (fim_sonoX, fim_sonoY, fim_sonoZ, quinta_hora_sono, espacoE, duracaoE, bateria))
             send_message(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{fim_sonoX}', '{fim_sonoY}', '{fim_sonoZ}', '{quinta_hora_sono}', '{espacoE}', '{duracaoE}');"
             cursor.execute(query)
+            cursor_grupo.execute(query)
             conn.commit() 
+            conn_grupo.commit()
 
     cursor.close()
+    cursor_grupo.close()
     conn.close()
+    conn_grupo.close()
 
     listaEspaco.append(espacoA)
     listaEspaco.append(espacoB)
