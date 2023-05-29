@@ -5,6 +5,7 @@ from azure.iot.device import IoTHubDeviceClient, Message
 import matplotlib.pyplot as plot
 import mysql.connector
 from mysql.connector import errorcode
+import unidecode
 
 # Chaves de API do Twitter
 consumer_key = "8CNb9XmJ7KrjOLp8UMNH9Fznh"
@@ -108,10 +109,13 @@ for tweet in tweets:
     polarity = analysis.sentiment.polarity
     if polarity > 0:
         sentiment = "positivo"
+        dados = {'fraseTweet': cleaned_text, 'sentimentoTweet': sentiment}
     elif polarity < 0:
         sentiment = "negativo"
+        dados = {'fraseTweet': cleaned_text, 'sentimentoTweet': sentiment}
     else:
         sentiment = "neutro"
+        dados = {'fraseTweet': cleaned_text, 'sentimentoTweet': sentiment}
 
     insert_db(cleaned_text, sentiment)
     insert_db_grupo(cleaned_text, sentiment)    
