@@ -13,6 +13,21 @@ def conect_iothub():
     CONNECTION_STRING = "HostName=iot-sensor-movimento.azure-devices.net;DeviceId=sensor-movimento;SharedAccessKey=92qpVK8l0Xv8eH18sAubjul+fxpfmhmdYFdSa5kRZEo="
     return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
 
+def conect_iothub_grupo():
+    CONNECTION_STRING = "HostName=IoTHubDefinitivo.azure-devices.net;DeviceId=dispositivo-integracao-azureAws;SharedAccessKey=gOp+MTWrr0jsJrVIJ+mz1XQoS84e83TsAll2TPGa15o="
+    return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)    
+
+def send_message_grupo(message):
+    DEVICE_ID = "dispositivo-integracao-azureAws"
+    message.content_encoding = "utf-8"
+    message.content_type = "application/json"
+    message.custom_properties["device_id"] = DEVICE_ID
+    sensor = conect_iothub_grupo()
+    sensor.connect()
+    print("Enviando mensagem:", message)
+    sensor.send_message(message)
+    sensor.shutdown()
+
 def send_message(message):
     DEVICE_ID = "sensor-movimento"
     message.content_encoding = "utf-8"
@@ -131,6 +146,7 @@ def analise_movimento():
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
                           (inicio_sonoX, inicio_sonoY, inicio_sonoZ, primeira_hora_sono, espacoA, duracaoA, bateria))
             send_message(message)
+            send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
             
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{inicio_sonoX}', '{inicio_sonoY}', '{inicio_sonoZ}', '{primeira_hora_sono}', '{espacoA}', '{duracaoA}');"
@@ -167,6 +183,7 @@ def analise_movimento():
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
                           (sono_leveX, sono_leveY, sono_leveZ, segunda_hora_sono, espacoB, duracaoB, bateria))
             send_message(message)
+            send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_leveX}', '{sono_leveY}', '{sono_leveZ}', '{segunda_hora_sono}', '{espacoB}', '{duracaoB}');"
@@ -204,6 +221,7 @@ def analise_movimento():
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_profundoX, sono_profundoY, sono_profundoZ, terceira_hora_sono, espacoC, duracaoC, bateria))
             send_message(message)
+            send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
             
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_profundoX}', '{sono_profundoY}', '{sono_profundoZ}', '{terceira_hora_sono}', '{espacoC}', '{duracaoC}');"
@@ -240,6 +258,7 @@ def analise_movimento():
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_remX, sono_remY, sono_remZ, quarta_hora_sono, espacoD, duracaoD, bateria))
             send_message(message)
+            send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_remX}', '{sono_remY}', '{sono_remZ}', '{quarta_hora_sono}', '{espacoD}', '{duracaoD}');"
@@ -276,6 +295,7 @@ def analise_movimento():
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (fim_sonoX, fim_sonoY, fim_sonoZ, quinta_hora_sono, espacoE, duracaoE, bateria))
             send_message(message)
+            send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
             query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{fim_sonoX}', '{fim_sonoY}', '{fim_sonoZ}', '{quinta_hora_sono}', '{espacoE}', '{duracaoE}');"
