@@ -14,11 +14,11 @@ def conect_iothub():
     return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
 
 def conect_iothub_grupo():
-    CONNECTION_STRING = "HostName=IoTHubDefinitivo.azure-devices.net;DeviceId=dispositivo-integracao-azureAws;SharedAccessKey=gOp+MTWrr0jsJrVIJ+mz1XQoS84e83TsAll2TPGa15o="
+    CONNECTION_STRING = "HostName=IoTHubDefinitivo.azure-devices.net;DeviceId=dispositivo-Fernando;SharedAccessKey=bwbgCEIEWPTgEwyl7FtwZprdcYZJoFdquiST6v4aQrE="
     return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)    
 
 def send_message_grupo(message):
-    DEVICE_ID = "dispositivo-integracao-azureAws"
+    DEVICE_ID = "dispositivo-Fernando"
     message.content_encoding = "utf-8"
     message.content_type = "application/json"
     message.custom_properties["device_id"] = DEVICE_ID
