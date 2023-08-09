@@ -9,64 +9,64 @@ import time
 import datetime
 import sys
 
-def conect_iothub():
-    CONNECTION_STRING = "HostName=iot-sensor-movimento.azure-devices.net;DeviceId=sensor-movimento;SharedAccessKey=92qpVK8l0Xv8eH18sAubjul+fxpfmhmdYFdSa5kRZEo="
-    return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
+# def conect_iothub():
+#     CONNECTION_STRING = "HostName=iot-sensor-movimento.azure-devices.net;DeviceId=sensor-movimento;SharedAccessKey=92qpVK8l0Xv8eH18sAubjul+fxpfmhmdYFdSa5kRZEo="
+#     return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
 
-def conect_iothub_grupo():
-    CONNECTION_STRING = "HostName=IoTHubDefinitivo.azure-devices.net;DeviceId=dispositivo-Fernando;SharedAccessKey=bwbgCEIEWPTgEwyl7FtwZprdcYZJoFdquiST6v4aQrE="
-    return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)    
+# def conect_iothub_grupo():
+#     CONNECTION_STRING = "HostName=IoTHubDefinitivo.azure-devices.net;DeviceId=dispositivo-Fernando;SharedAccessKey=bwbgCEIEWPTgEwyl7FtwZprdcYZJoFdquiST6v4aQrE="
+#     return IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)    
 
-def send_message_grupo(message):
-    DEVICE_ID = "dispositivo-Fernando"
-    message.content_encoding = "utf-8"
-    message.content_type = "application/json"
-    message.custom_properties["device_id"] = DEVICE_ID
-    sensor = conect_iothub_grupo()
-    sensor.connect()
-    print("Enviando mensagem:", message)
-    sensor.send_message(message)
-    sensor.shutdown()
+# def send_message_grupo(message):
+#     DEVICE_ID = "dispositivo-Fernando"
+#     message.content_encoding = "utf-8"
+#     message.content_type = "application/json"
+#     message.custom_properties["device_id"] = DEVICE_ID
+#     sensor = conect_iothub_grupo()
+#     sensor.connect()
+#     print("Enviando mensagem:", message)
+#     sensor.send_message(message)
+#     sensor.shutdown()
 
-def send_message(message):
-    DEVICE_ID = "sensor-movimento"
-    message.content_encoding = "utf-8"
-    message.content_type = "application/json"
-    message.custom_properties["device_id"] = DEVICE_ID
-    sensor = conect_iothub()
-    sensor.connect()
-    print("Enviando mensagem:", message)
-    sensor.send_message(message)
-    sensor.shutdown()
+# def send_message(message):
+#     DEVICE_ID = "sensor-movimento"
+#     message.content_encoding = "utf-8"
+#     message.content_type = "application/json"
+#     message.custom_properties["device_id"] = DEVICE_ID
+#     sensor = conect_iothub()
+#     sensor.connect()
+#     print("Enviando mensagem:", message)
+#     sensor.send_message(message)
+#     sensor.shutdown()
 
-def conect_banco():
-    try:
-        conn = mysql.connector.connect(
-            host="sensor-movimento.mysql.database.azure.com", 
-            user="roott", 
-            password="Urubu100",
-            database="movimento",
-            ssl_ca="DigiCertGlobalRootCA.crt.pem",
-            #ssl-mode==require)
-            port="3306")
-        print("Conexão com banco de dados feita\n")
-        return conn
-    except mysql.connector.Error as error:
-        if error.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database doesn't exist")
-        elif error.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("User name or password is wrong")
-        else:
-            print(error)
+# def conect_banco():
+#     try:
+#         conn = mysql.connector.connect(
+#             host="sensor-movimento.mysql.database.azure.com", 
+#             user="roott", 
+#             password="Urubu100",
+#             database="movimento",
+#             ssl_ca="DigiCertGlobalRootCA.crt.pem",
+#             #ssl-mode==require)
+#             port="3306")
+#         print("Conexão com banco de dados feita\n")
+#         return conn
+#     except mysql.connector.Error as error:
+#         if error.errno == errorcode.ER_BAD_DB_ERROR:
+#             print("Database doesn't exist")
+#         elif error.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+#             print("User name or password is wrong")
+#         else:
+#             print(error)
 
 def conect_banco_grupo():
     try:
         conn_grupo = mysql.connector.connect(
-            host="frequenciacardiaca.mysql.database.azure.com", 
-            user="roott", 
-            password="Urubu100",
+            host="rds-underdogs.cfzmhji6igm5.us-east-1.rds.amazonaws.com", 
+            user="admin", 
+            password="urubu100",
             database="Grupo3",
-            ssl_ca="DigiCertGlobalRootCA.crt.pem",
+            #ssl_ca="DigiCertGlobalRootCA.crt.pem",
             #ssl-mode==require)
             port="3306")
         print("Conexão com banco de dados feita\n")
@@ -81,9 +81,9 @@ def conect_banco_grupo():
 
 def analise_movimento():
 
-    conn = conect_banco()
+    #conn = conect_banco()
     conn_grupo = conect_banco_grupo()
-    cursor = conn.cursor()
+    #cursor = conn.cursor()
     cursor_grupo = conn_grupo.cursor()
 
     leitura_inicio_sono = []
@@ -116,6 +116,8 @@ def analise_movimento():
     for i in range(30):
         for j in range(5):
         
+            time.sleep(1)
+            
             # Início do sono (Começo do sono até a primeira hora do sono)
             inicioProcessamentoA = time.time()
 
@@ -136,6 +138,8 @@ def analise_movimento():
             print(f"Leitura início do sono (sono leve), eixo de aceleração Z: {inicio_sonoZ}")
             
             primeira_hora_sono = datetime.datetime.strptime(time.strftime("%H:%M:%S"), '%H:%M:%S').time()
+            dataHoraAtual = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
             print(f"Horário da leitura: {primeira_hora_sono}\n")
             horario_leituras.append(primeira_hora_sono)
 
@@ -143,14 +147,14 @@ def analise_movimento():
             duracaoA = fimProcessamentoA - inicioProcessamentoA
             espacoA = sys.getsizeof(leitura_inicio_sono) / (1024 * 1024)
 
-            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
+            message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f, ""}' %
                           (inicio_sonoX, inicio_sonoY, inicio_sonoZ, primeira_hora_sono, espacoA, duracaoA, bateria))
-            send_message(message)
-            send_message_grupo(message)
+            # send_message(message)
+            # send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
             
-            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{inicio_sonoX}', '{inicio_sonoY}', '{inicio_sonoZ}', '{primeira_hora_sono}', '{espacoA}', '{duracaoA}');"
-            cursor.execute(query)
+            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{inicio_sonoX}', '{inicio_sonoY}', '{inicio_sonoZ}', '{dataHoraAtual}', '{espacoA}', '{duracaoA}');"
+            #cursor.execute(query)
             cursor_grupo.execute(query)
     
 
@@ -182,12 +186,12 @@ def analise_movimento():
 
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
                           (sono_leveX, sono_leveY, sono_leveZ, segunda_hora_sono, espacoB, duracaoB, bateria))
-            send_message(message)
-            send_message_grupo(message)
+            # send_message(message)
+            # send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
-            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_leveX}', '{sono_leveY}', '{sono_leveZ}', '{segunda_hora_sono}', '{espacoB}', '{duracaoB}');"
-            cursor.execute(query)
+            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_leveX}', '{sono_leveY}', '{sono_leveZ}', '{dataHoraAtual}', '{espacoB}', '{duracaoB}');"
+            # cursor.execute(query)
             cursor_grupo.execute(query)
 
 
@@ -220,12 +224,12 @@ def analise_movimento():
 
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_profundoX, sono_profundoY, sono_profundoZ, terceira_hora_sono, espacoC, duracaoC, bateria))
-            send_message(message)
-            send_message_grupo(message)
+            # send_message(message)
+            # send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
             
-            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_profundoX}', '{sono_profundoY}', '{sono_profundoZ}', '{terceira_hora_sono}', '{espacoC}', '{duracaoC}');"
-            cursor.execute(query)
+            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_profundoX}', '{sono_profundoY}', '{sono_profundoZ}', '{dataHoraAtual}', '{espacoC}', '{duracaoC}');"
+            # cursor.execute(query)
             cursor_grupo.execute(query)
 
             # Sono REM (Terceira hora de sono até a quarta hora do sono)
@@ -257,12 +261,12 @@ def analise_movimento():
 
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (sono_remX, sono_remY, sono_remZ, quarta_hora_sono, espacoD, duracaoD, bateria))
-            send_message(message)
-            send_message_grupo(message)
+            # send_message(message)
+            # send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
-            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_remX}', '{sono_remY}', '{sono_remZ}', '{quarta_hora_sono}', '{espacoD}', '{duracaoD}');"
-            cursor.execute(query)
+            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{sono_remX}', '{sono_remY}', '{sono_remZ}', '{dataHoraAtual}', '{espacoD}', '{duracaoD}');"
+            # cursor.execute(query)
             cursor_grupo.execute(query)
 
             # Fim do sono (Quarta hora de sono até a quinta hora do sono)
@@ -294,19 +298,19 @@ def analise_movimento():
 
             message = Message('{"aceleracao_eixo_x": %f, "aceleracao_eixo_y": %f, "aceleracao_eixo_z": %f, "horario_leitura": "%s", "memoria": %f, "duracao_execucao": %f, "bateria_dispositivo": %.2f}' %
             (fim_sonoX, fim_sonoY, fim_sonoZ, quinta_hora_sono, espacoE, duracaoE, bateria))
-            send_message(message)
-            send_message_grupo(message)
+            # send_message(message)
+            # send_message_grupo(message)
             bateria -= 0.01 / 100 * bateria
 
-            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{fim_sonoX}', '{fim_sonoY}', '{fim_sonoZ}', '{quinta_hora_sono}', '{espacoE}', '{duracaoE}');"
-            cursor.execute(query)
+            query = f"INSERT INTO sensor_movimento (aceleracao_eixo_x, aceleracao_eixo_y, aceleracao_eixo_z, horario_leitura, memoria, duracao_execucao) VALUES ('{fim_sonoX}', '{fim_sonoY}', '{fim_sonoZ}', '{dataHoraAtual}', '{espacoE}', '{duracaoE}');"
+            # cursor.execute(query)
             cursor_grupo.execute(query)
-            conn.commit() 
+            # conn.commit() 
             conn_grupo.commit()
 
-    cursor.close()
+    # cursor.close()
     cursor_grupo.close()
-    conn.close()
+    # conn.close()
     conn_grupo.close()
 
     listaEspaco.append(espacoA)
